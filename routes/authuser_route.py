@@ -5,18 +5,19 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.hash import Hash
-from models import authuser_model
-from schemas import authuser_schema
+from models import gallery_model
+from schemas import gallery_schema
 
-router = APIRouter(prefix="/api/auth", tags=["authuser"])
+router = APIRouter(prefix="/api/auth", tags=["Artist"])
 
 
+# Route for registering an artist
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def register_user(
-    request: authuser_schema.AuthSchema, db: Session = Depends(get_db)
+async def register_artist(
+    request: gallery_schema.AuthSchema, db: Session = Depends(get_db)
 ):
     try:
-        new_authenticated_user = authuser_model.AuthUser(
+        new_authenticated_user = gallery_model.AuthUser(
             id=str(uuid.uuid4()),
             username=request.username,
             password=Hash.bcrypt(request.password),
@@ -34,8 +35,8 @@ async def register_user(
 
 def get_user_by_username(username: str, db: Session = Depends(get_db)):
     user = (
-        db.query(authuser_model.AuthUser)
-        .filter(authuser_model.AuthUser.username == username)
+        db.query(gallery_model.AuthUser)
+        .filter(gallery_model.AuthUser.username == username)
         .first()
     )
     if user is None:

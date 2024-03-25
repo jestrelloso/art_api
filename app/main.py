@@ -1,14 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from models import authuser_model
+from auth import authentication_route
+from models import gallery_model
 from routes import authuser_route
 
 from .database import engine
 
 app = FastAPI()
 
-authuser_model.Base.metadata.create_all(bind=engine)
+gallery_model.Base.metadata.create_all(bind=engine)
 
 
 @app.get("/apihealthcheck", tags=["test"])
@@ -29,4 +30,4 @@ app.add_middleware(
 )
 
 app.include_router(authuser_route.router)
-# app.include_router(authentication_route.router)
+app.include_router(authentication_route.router)

@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.hash import Hash
 from auth import oauth2
-from models import authuser_model
+from models import gallery_model
 
 router = APIRouter(tags=["authentication"])
 
@@ -18,8 +18,8 @@ async def get_token(
 ):
     # find valid existing user in the authusers database
     user = (
-        db.query(authuser_model.AuthUser)
-        .filter(authuser_model.AuthUser.username == request.username)
+        db.query(gallery_model.AuthUser)
+        .filter(gallery_model.AuthUser.username == request.username)
         .first()
     )
     if user is None:
