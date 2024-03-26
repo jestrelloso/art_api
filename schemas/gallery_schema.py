@@ -16,6 +16,16 @@ class Artwork(BaseModel):
         orm_mode = True
 
 
+# ARTWORK Create schema
+class ArtworkSchema(BaseModel):
+    name: str
+    description: str
+    image: str
+    user_id: str
+    createdAt: datetime | None = None
+    updatedAt: datetime | None = None
+
+
 # USER Create schema
 class AuthSchema(BaseModel):
     username: str

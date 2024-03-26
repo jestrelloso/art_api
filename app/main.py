@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from auth import authentication_route
 from models import gallery_model
-from routes import authuser_route
+from routes import artwork_route, authuser_route
 
 from .database import engine
 
@@ -30,4 +31,9 @@ app.add_middleware(
 )
 
 app.include_router(authuser_route.router)
+app.include_router(artwork_route.router)
 app.include_router(authentication_route.router)
+
+
+# making the files statically availabe and folder to be accessible via /files/filename.contenttype endpoint
+app.mount("/images", StaticFiles(directory="images"), name="images")
