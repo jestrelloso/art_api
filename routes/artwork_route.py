@@ -15,20 +15,18 @@ router = APIRouter(prefix="/api/artwork", tags=["Artwork"])
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_artwork(
     request: gallery_schema.ArtworkSchema,
-    # image: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
 
     try:
-
-        # file_path = os.path.join(UPLOAD_DIR, image.filename)  # images/filename.jpeg
-        # with open(file_path, "w+b") as buffer:
-        #     shutil.copyfileobj(image.file, buffer)
+        # path = f"images/{uploadfile.filename}"  # stores uploaded files in a static folder named images
+        # with open(path, "w+b") as buffer:
+        #     shutil.copyfileobj(uploadfile.file, buffer)
 
         new_artwork = gallery_model.Artwork(
             name=request.name,
             description=request.description,
-            image=request.image,  # Save the file path to the database
+            image=request.image,
             user_id=request.user_id,
         )
 
