@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from decouple import config
 from fastapi import HTTPException, status
 from fastapi.param_functions import Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -14,8 +13,8 @@ from routes import authuser_route
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = config("secret")
-ALGORITHM = config("algorithm")
+SECRET_KEY = "c8bf81a36968581fcb95cdec6ff8ee92"
+ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 
