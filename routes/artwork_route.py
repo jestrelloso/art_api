@@ -18,14 +18,13 @@ router = APIRouter(prefix="/api/artwork", tags=["Artwork"])
 async def create_artwork(
     name: str,
     description: str,
-    artist_id: str,
     uploadfile: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
 ):
     try:
         # Save the uploaded image to the specified directory
-        image_path = f"images/{artist_id}_{uploadfile.filename}"
+        image_path = f"images/{current_artist.id}_{uploadfile.filename}"
         with open(image_path, "wb") as image:
             shutil.copyfileobj(uploadfile.file, image)
 
@@ -34,7 +33,7 @@ async def create_artwork(
             name=name,
             description=description,
             image_url=image_path,  # Save the file path to the database
-            artist_id=artist_id,
+            artist_id=current_artist.id,
         )
 
         # Add the new artwork to the database session
@@ -63,7 +62,11 @@ async def get_all_artworks(
     current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
 ):
     try:
-        artworks = db.query(gallery_model.Artwork).all()
+        artworks = (
+            db.query(gallery_model.Artwork)
+            .filter(gallery_model.Artwork.artist_id == current_artist.id)
+            .all()
+        )
         if artworks is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         return artworks
@@ -72,28 +75,31 @@ async def get_all_artworks(
 
 
 # Route for reading a single artwork
-@router.get("/{user_id}", response_model=gallery_schema.ArtworkDisplay)
+@router.get("/{artwork_id}", response_model=gallery_schema.ArtworkDisplay)
 async def get_single_artwork(
     artwork_id: str,
     db: Session = Depends(get_db),
     current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
 ):
     try:
-        artwork = (
+        user = (
             db.query(gallery_model.Artwork)
-            .filter(gallery_model.Artwork.id == artwork_id)
+            .filter(
+                gallery_model.Artwork.id == artwork_id,
+                gallery_model.Artwork.artist_id == current_artist.id,
+            )
             .first()
         )
-        if artwork is None:
+        if user is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Artwork {artwork_id} not found!",
             )
-        return artwork
-    except Exception as e:
+        return user
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={e},
+            detail=f"Artwork {artwork_id} not found!",
         )
 
 
