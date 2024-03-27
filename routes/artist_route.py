@@ -40,7 +40,9 @@ async def register_artist(
     status_code=status.HTTP_200_OK,
     response_model=List[gallery_schema.ArtistDisplay],
 )
-async def get_all_artists(db: Session = Depends(get_db)):
+async def get_all_artists(
+    db: Session = Depends(get_db),
+):
     try:
         users = db.query(gallery_model.Artist).all()
         if users is None:

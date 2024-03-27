@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from auth.oauth2 import get_current_user
 from models import gallery_model
 from schemas import gallery_schema
 
@@ -20,6 +21,7 @@ async def create_artwork(
     artist_id: str,
     uploadfile: UploadFile = File(...),
     db: Session = Depends(get_db),
+    current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
 ):
     try:
         # Save the uploaded image to the specified directory
@@ -56,7 +58,10 @@ async def create_artwork(
     status_code=status.HTTP_200_OK,
     response_model=List[gallery_schema.ArtworkDisplay],
 )
-async def get_all_artworks(db: Session = Depends(get_db)):
+async def get_all_artworks(
+    db: Session = Depends(get_db),
+    current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
+):
     try:
         artworks = db.query(gallery_model.Artwork).all()
         if artworks is None:
@@ -68,7 +73,11 @@ async def get_all_artworks(db: Session = Depends(get_db)):
 
 # Route for reading a single artwork
 @router.get("/{user_id}", response_model=gallery_schema.ArtworkDisplay)
-async def get_single_artwork(artwork_id: str, db: Session = Depends(get_db)):
+async def get_single_artwork(
+    artwork_id: str,
+    db: Session = Depends(get_db),
+    current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
+):
     try:
         artwork = (
             db.query(gallery_model.Artwork)
@@ -92,7 +101,12 @@ async def get_single_artwork(artwork_id: str, db: Session = Depends(get_db)):
 
 
 # to retrieve and download an image via an endpoint
-@router.get("/download/{name}", response_class=FileResponse)
-async def get_file(name: str):
+@router.get(
+    "/download/{name}",
+    response_class=FileResponse,
+)
+async def get_file(
+    name: str, current_artist: gallery_schema.ArtistSchema = Depends(get_current_user)
+):
     path = f"images/{name}"
     return path
