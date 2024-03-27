@@ -21,7 +21,7 @@ async def create_artwork(
 ):
     try:
         # Save the uploaded image to the specified directory
-        image_path = f"images/{uploadfile.filename}"
+        image_path = f"images/{artist_id}_{uploadfile.filename}"
         with open(image_path, "wb") as image:
             shutil.copyfileobj(uploadfile.file, image)
 
