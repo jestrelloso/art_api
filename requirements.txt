@@ -11,3 +11,4 @@ pydantic[email]
 PyJWT==1.7.1
 python-decouple==3.3
 passlib[bcrypt]
+sqlalchemy-utils

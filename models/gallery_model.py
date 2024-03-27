@@ -3,6 +3,7 @@ from sqlalchemy import TIMESTAMP, CheckConstraint, Column, String
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy_utils import URLType
 
 from app.database import Base
 
@@ -31,7 +32,7 @@ class Artwork(Base):
     id = Column(GUID, primary_key=True, default=GUID_DEFAULT_SQLITE, unique=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    image = Column(String, nullable=False)
+    image_url = Column(URLType, nullable=False)
     user_id = Column(GUID, ForeignKey("auth_user.id", ondelete="CASCADE"))
     user = relationship("AuthUser", back_populates="artwork")
     createdAt = Column(
