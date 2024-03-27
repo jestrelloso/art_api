@@ -18,8 +18,8 @@ async def get_token(
 ):
     # find valid existing user in the authusers database
     user = (
-        db.query(gallery_model.AuthUser)
-        .filter(gallery_model.AuthUser.username == request.username)
+        db.query(gallery_model.Artist)
+        .filter(gallery_model.Artist.username == request.username)
         .first()
     )
     if user is None:

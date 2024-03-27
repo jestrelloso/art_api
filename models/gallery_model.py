@@ -9,12 +9,12 @@ from app.database import Base
 
 
 # DATABASE model for Authenticated or Registration of user // For authentication fields
-class AuthUser(Base):
-    __tablename__ = "auth_user"
+class Artist(Base):
+    __tablename__ = "artist"
     id = Column(GUID, primary_key=True, default=GUID_DEFAULT_SQLITE, unique=True)
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
-    artwork = relationship("Artwork", back_populates="user", cascade="all, delete")
+    artwork = relationship("Artwork", back_populates="artist", cascade="all, delete")
     createdAt = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
     )
@@ -33,8 +33,8 @@ class Artwork(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     image_url = Column(URLType, nullable=False)
-    user_id = Column(GUID, ForeignKey("auth_user.id", ondelete="CASCADE"))
-    user = relationship("AuthUser", back_populates="artwork")
+    artist_id = Column(GUID, ForeignKey("artist.id", ondelete="CASCADE"))
+    artist = relationship("Artist", back_populates="artwork")
     createdAt = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
     )

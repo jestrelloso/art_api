@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 
 from auth import authentication_route
 from models import gallery_model
-from routes import artwork_route, authuser_route
+from routes import artist_route, artwork_route
 
 from .database import engine
 
@@ -30,7 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(authuser_route.router)
+app.include_router(artist_route.router)
 app.include_router(artwork_route.router)
 app.include_router(authentication_route.router)
 

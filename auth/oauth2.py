@@ -9,7 +9,7 @@ from jose.exceptions import JWTError
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from routes import authuser_route
+from routes import artist_route
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -48,15 +48,13 @@ def get_current_user(
             token, SECRET_KEY, algorithms=[ALGORITHM]
         )  # decode the payload via the token obtained from that current user
         username: str = payload.get("sub")
-        print(username)
+        # print(username)
         if username is None:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
 
-    user = authuser_route.get_user_by_username(
-        username, db
-    )  # finding that specific user
+    user = artist_route.get_user_by_username(username, db)  # finding that specific user
 
     if user is None:
         raise credentials_exception
