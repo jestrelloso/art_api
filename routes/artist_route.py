@@ -53,7 +53,7 @@ async def get_all_artists(
 
 
 # Route for getting a single artist
-@router.get("/{user_id}", response_model=gallery_schema.ArtistDisplay)
+@router.get("/{artist_id}", response_model=gallery_schema.ArtistDisplay)
 async def get_single_artist(user_id: str, db: Session = Depends(get_db)):
     try:
         user = (
@@ -74,7 +74,7 @@ async def get_single_artist(user_id: str, db: Session = Depends(get_db)):
 
 
 # Route for updating
-@router.put("/{user_id}", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/{artist_id}", status_code=status.HTTP_202_ACCEPTED)
 async def update_artist(
     request: gallery_schema.ArtistSchemaUpdate,
     user_id: str,
@@ -105,7 +105,7 @@ async def update_artist(
 
 
 # Route for deleting
-@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{artist_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_artist(user_id: str, db: Session = Depends(get_db)):
     try:
         user_query = db.query(gallery_model.Artist).filter(

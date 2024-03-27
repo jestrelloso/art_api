@@ -82,7 +82,7 @@ async def get_single_artwork(
     current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
 ):
     try:
-        user = (
+        artwork = (
             db.query(gallery_model.Artwork)
             .filter(
                 gallery_model.Artwork.id == artwork_id,
@@ -90,12 +90,12 @@ async def get_single_artwork(
             )
             .first()
         )
-        if user is None:
+        if artwork is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Artwork {artwork_id} not found!",
             )
-        return user
+        return artwork
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -104,6 +104,8 @@ async def get_single_artwork(
 
 
 # Route for updating an artwork
+
+# Route for deleting an artwork
 
 
 # to retrieve and download an image via an endpoint
