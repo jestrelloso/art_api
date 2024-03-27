@@ -88,6 +88,9 @@ async def get_single_artwork(artwork_id: str, db: Session = Depends(get_db)):
         )
 
 
+# Route for updating an artwork
+
+
 # to retrieve and download an image via an endpoint
 @router.get("/download/{name}", response_class=FileResponse)
 async def get_file(name: str):
