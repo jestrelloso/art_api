@@ -106,16 +106,16 @@ async def update_artist(
 
 # Route for deleting
 @router.delete("/{artist_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_artist(user_id: str, db: Session = Depends(get_db)):
+async def delete_artist(artist_id: str, db: Session = Depends(get_db)):
     try:
         user_query = db.query(gallery_model.Artist).filter(
-            gallery_model.Artist.id == user_id
+            gallery_model.Artist.id == artist_id
         )
         user = user_query.first()
         if user is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"User with id {user_id} not found",
+                detail=f"Artist with id {artist_id} not found",
             )
         user_query.delete(synchronize_session=False)
         db.commit()
@@ -123,7 +123,7 @@ async def delete_artist(user_id: str, db: Session = Depends(get_db)):
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"User with an ID of {user_id} does not exist!",
+            detail=f"Artist with an ID of {artist_id} does not exist!",
         )
 
 

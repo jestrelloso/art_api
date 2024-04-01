@@ -71,7 +71,7 @@ async def get_all_artworks(
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         return artworks
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail={e})
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={e})
 
 
 # Route for reading a single artwork
