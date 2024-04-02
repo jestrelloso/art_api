@@ -56,7 +56,7 @@ class ArtistDisplay(BaseModel):
     username: str
     createdAt: datetime | None = None
     updatedAt: datetime | None = None
-    artwork: List[Artwork] = []
+    artworks: List[Artwork] = []
 
     class Config:
         orm_mode = True
