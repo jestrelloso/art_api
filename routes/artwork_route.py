@@ -1,3 +1,4 @@
+import os
 import shutil
 from typing import List
 
@@ -6,7 +7,6 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-import os
 from auth.oauth2 import get_current_user
 from models import gallery_model
 from schemas import gallery_schema
@@ -110,11 +110,22 @@ async def get_single_artwork(
 
 # Route for deleting an artwork
 @router.delete("/{artwork_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_artwork(artwork_id: str, db: Session=Depends(get_db), current_artist: gallery_schema.ArtistSchema = Depends(get_current_user)):
+def delete_artwork(
+    artwork_id: str,
+    db: Session = Depends(get_db),
+    current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
+):
     try:
-        artwork = db.query(gallery_model.Artwork).filter(gallery_model.Artwork.id == artwork_id).first()
+        artwork = (
+            db.query(gallery_model.Artwork)
+            .filter(gallery_model.Artwork.id == artwork_id)
+            .first()
+        )
         if artwork is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Artwork {artwork_id} not found!")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Artwork {artwork_id} not found!",
+            )
 
         # deletion of instance in the image path
         if os.path.exists(artwork.image_url):
@@ -124,7 +135,10 @@ def delete_artwork(artwork_id: str, db: Session=Depends(get_db), current_artist:
         db.commit()
 
     except Exception:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Artwork {artwork_id} not found!")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Artwork {artwork_id} not found!",
+        )
 
 
 # to retrieve and download an image via an endpoint
@@ -137,4 +151,3 @@ async def get_file(
 ):
     path = f"images/{name}"
     return path
-

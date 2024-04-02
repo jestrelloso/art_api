@@ -117,7 +117,7 @@ async def delete_artist(artist_id: str, db: Session = Depends(get_db)):
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Artist with id {artist_id} not found",
             )
-        user_query.delete(synchronize_session=False)
+        db.delete(user)
         db.commit()
         return {"Status": "Success", "Message": "User deleted successfully!"}
     except Exception:
