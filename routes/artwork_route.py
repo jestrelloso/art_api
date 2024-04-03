@@ -105,7 +105,54 @@ async def get_single_artwork(
 
 
 # # Route for updating an artwork
-# @router.put("/{artwork_id}", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/{artwork_id}", status_code=status.HTTP_202_ACCEPTED)
+def update_artwork(
+    artwork_id: str,
+    name: str,
+    description: str,
+    uploadfile: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
+):
+    try:
+        # fetch the artwork under the user that is logged in
+        user_query = db.query(gallery_model.Artwork).filter(
+            gallery_model.Artwork.id == artwork_id,
+            gallery_model.Artwork.artist_id == current_artist.id,
+        )
+        # store the first fetched instance into a variable
+        artwork = user_query.first()
+        # error handling when none
+        if artwork is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Artwork with ID {artwork_id} not found!",
+            )
+        # if an image url under that artwork id exists
+        if os.path.exists(artwork.image_url):
+            os.remove(artwork.image_url)  # delete the image in that path
+
+        # Save the uploaded image to the specified directory (to replace)
+        image_path = f"images/{current_artist.id}_{uploadfile.filename}"
+        with open(image_path, "wb") as image:
+            shutil.copyfileobj(uploadfile.file, image)
+
+        # update the fields
+        user_query.update(
+            {
+                gallery_model.Artwork.name: name,
+                gallery_model.Artwork.description: description,
+                gallery_model.Artwork.image_url: image_path,
+            }
+        )
+        db.commit()
+        return {"Message": "Artwork Updated", "Artwork": user_query.first()}
+
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="An error occured while updating the user!",
+        )
 
 
 # Route for deleting an artwork
