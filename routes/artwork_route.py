@@ -106,7 +106,7 @@ async def get_single_artwork(
 
 # # Route for updating an artwork
 @router.put("/{artwork_id}", status_code=status.HTTP_202_ACCEPTED)
-def update_artwork(
+async def update_artwork(
     artwork_id: str,
     name: str,
     description: str,
@@ -157,7 +157,7 @@ def update_artwork(
 
 # Route for deleting an artwork
 @router.delete("/{artwork_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_artwork(
+async def delete_artwork(
     artwork_id: str,
     db: Session = Depends(get_db),
     current_artist: gallery_schema.ArtistSchema = Depends(get_current_user),
