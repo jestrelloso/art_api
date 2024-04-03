@@ -18,7 +18,7 @@ class Artist(Base):
         TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
     )
     updatedAt = Column(TIMESTAMP(timezone=True), default=None, onupdate=func.now())
-    artworks = relationship("Artwork", back_populates='artist', cascade="all, delete")
+    artworks = relationship("Artwork", back_populates="artist", cascade="all, delete")
 
     __table_args__ = (
         CheckConstraint("length(username) > 0", name="non_empty_username"),
@@ -37,7 +37,7 @@ class Artwork(Base):
         TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
     )
     updatedAt = Column(TIMESTAMP(timezone=True), default=None, onupdate=func.now())
-    artist_id = Column(GUID, ForeignKey('artists.id', ondelete="CASCADE"))
+    artist_id = Column(GUID, ForeignKey("artists.id", ondelete="CASCADE"))
     artist = relationship("Artist", back_populates="artworks")
 
     __table_args__ = (

@@ -4,9 +4,9 @@ from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.hash import Hash
 from auth import oauth2
 from models import gallery_model
+from utils.password_utils import verify
 
 router = APIRouter(tags=["authentication"])
 
@@ -26,7 +26,7 @@ async def get_token(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Credentials"
         )
-    if not Hash.verify(user.password, request.password):
+    if not verify(user.password, request.password):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Password"
         )

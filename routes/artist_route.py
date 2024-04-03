@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.hash import Hash
 from models import gallery_model
 from schemas import gallery_schema
+from utils.password_utils import hash
 
 router = APIRouter(prefix="/api/artist", tags=["Artist"])
 
@@ -21,7 +21,7 @@ async def register_artist(
         new_authenticated_user = gallery_model.Artist(
             id=str(uuid.uuid4()),
             username=request.username,
-            password=Hash.bcrypt(request.password),
+            password=hash(request.password),
         )
         db.add(new_authenticated_user)
         db.commit()
@@ -92,7 +92,7 @@ async def update_artist(
         user_query.update(
             {
                 gallery_model.Artist.username: request.username,
-                gallery_model.Artist.password: Hash.bcrypt(request.password),
+                gallery_model.Artist.password: hash(request.password),
             }
         )
         db.commit()
